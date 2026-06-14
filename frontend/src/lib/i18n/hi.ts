@@ -1,0 +1,26 @@
+export const hi = {
+  nav: {
+    dashboard: "डैशबोर्ड",
+    chat: "AI चैट",
+    workflow: "कार्यप्रवाह",
+    documents: "दस्तावेज़",
+    forms: "फ़ॉर्म",
+    schemes: "योजनाएँ",
+    portals: "पोर्टल",
+    profile: "प्रोफ़ाइल",
+    admin: "प्रशासन",
+  },
+  common: {
+    login: "लॉग इन",
+    signup: "साइन अप",
+    logout: "लॉग आउट",
+    menu: "मेनू",
+    askSaarthi: "सारथी से पूछें",
+    openApp: "ऐप खोलें",
+    voice: "वॉइस इनपुट जल्द आ रहा है!",
+    theme: "थीम",
+    language: "भाषा",
+    light: "लाइट",
+    dark: "डार्क",
+  },
+};

@@ -1,0 +1,145 @@
+version: "3.9"
+
+networks:
+  saarthi-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  qdrant-data:
+
+services:
+  # ── API Gateway ─────────────────────────────────────────────
+  api-gateway:
+    build: services/api-gateway
+    ports:
+      - "8000:8000"
+    environment:
+      AUTH_SERVICE_URL: http://auth-service:8001
+      AI_SERVICE_URL: http://ai-service:8002
+      WORKFLOW_SERVICE_URL: http://workflow-service:8003
+      PROFILE_SERVICE_URL: http://profile-service:8004
+      OCR_SERVICE_URL: http://ocr-service:8005
+    depends_on:
+      - auth-service
+      - ai-service
+      - workflow-service
+      - profile-service
+      - ocr-service
+    networks:
+      - saarthi-net
+
+  # ── Auth Service ───────────────────────────────────────────
+  auth-service:
+    build: services/auth-service
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgresql://saarthi:saarthi@postgres:5432/saarthi
+      JWT_SECRET: ${JWT_SECRET:-change-in-production}
+      AUTH_DEV_MODE: "true"
+      AUTH_DEV_FIXED_OTP: "true"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - saarthi-net
+
+  # ── AI Orchestrator Service ────────────────────────────────
+  ai-service:
+    build: services/ai-service
+    ports:
+      - "8002:8002"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      DATABASE_URL: postgresql://saarthi:saarthi@postgres:5432/saarthi
+      QDRANT_URL: http://qdrant:6333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+    networks:
+      - saarthi-net
+
+  # ── Workflow Engine Service ────────────────────────────────
+  workflow-service:
+    build: services/workflow-service
+    ports:
+      - "8003:8003"
+    environment:
+      DATABASE_URL: postgresql://saarthi:saarthi@postgres:5432/saarthi
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - saarthi-net
+
+  # ── Profile Service ────────────────────────────────────────
+  profile-service:
+    build: services/profile-service
+    ports:
+      - "8004:8004"
+    environment:
+      DATABASE_URL: postgresql://saarthi:saarthi@postgres:5432/saarthi
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - saarthi-net
+
+  # ── OCR Service ────────────────────────────────────────────
+  ocr-service:
+    build: services/ocr-service
+    ports:
+      - "8005:8005"
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+    networks:
+      - saarthi-net
+
+  # ── PostgreSQL ─────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: saarthi
+      POSTGRES_PASSWORD: saarthi
+      POSTGRES_DB: saarthi
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saarthi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - saarthi-net
+
+  # ── Qdrant Vector DB ───────────────────────────────────────
+  qdrant:
+    image: qdrant/qdrant:v1.13.0
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - saarthi-net
+
+  # ── Frontend ──────────────────────────────────────────────
+  frontend:
+    build: frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api/v1
+    depends_on:
+      - api-gateway
+    networks:
+      - saarthi-net

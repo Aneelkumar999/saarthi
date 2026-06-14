@@ -1,0 +1,26 @@
+export const en = {
+  nav: {
+    dashboard: "Dashboard",
+    chat: "AI Chat",
+    workflow: "Workflow",
+    documents: "Documents",
+    forms: "Forms",
+    schemes: "Schemes",
+    portals: "Portals",
+    profile: "Profile",
+    admin: "Admin",
+  },
+  common: {
+    login: "Login",
+    signup: "Sign Up",
+    logout: "Logout",
+    menu: "Menu",
+    askSaarthi: "Ask Saarthi",
+    openApp: "Open App",
+    voice: "Voice input coming soon!",
+    theme: "Theme",
+    language: "Language",
+    light: "Light",
+    dark: "Dark",
+  },
+};

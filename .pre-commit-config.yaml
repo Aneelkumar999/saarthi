@@ -1,0 +1,14 @@
+repos:
+  - repo: local
+    hooks:
+      - id: python-compile
+        name: Python syntax check
+        entry: backend/venv/bin/python -B -m py_compile
+        language: system
+        files: ^backend/app/.*\.py$
+      - id: frontend-eslint
+        name: Frontend ESLint
+        entry: bash -c 'cd frontend && npm run lint -- .'
+        language: system
+        pass_filenames: false
+        files: ^frontend/(src/.*\.(js|jsx|ts|tsx)|eslint\.config\.mjs|package\.json|tsconfig\.json|next\.config\.ts)$

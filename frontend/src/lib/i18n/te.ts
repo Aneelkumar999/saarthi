@@ -1,0 +1,26 @@
+export const te = {
+  nav: {
+    dashboard: "డ్యాష్‌బోర్డ్",
+    chat: "AI చాట్",
+    workflow: "వర్క్‌ఫ్లో",
+    documents: "పత్రాలు",
+    forms: "ఫారమ్‌లు",
+    schemes: "పథకాలు",
+    portals: "పోర్టల్స్",
+    profile: "ప్రొఫైల్",
+    admin: "నిర్వహణ",
+  },
+  common: {
+    login: "లాగిన్",
+    signup: "సైన్ అప్",
+    logout: "లాగౌట్",
+    menu: "మెనూ",
+    askSaarthi: "సారథిని అడగండి",
+    openApp: "యాప్ తెరవండి",
+    voice: "వాయిస్ ఇన్‌పుట్ త్వరలో!",
+    theme: "థీమ్",
+    language: "భాష",
+    light: "లైట్",
+    dark: "డార్క్",
+  },
+};
