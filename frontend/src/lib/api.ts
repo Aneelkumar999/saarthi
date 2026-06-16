@@ -21,7 +21,7 @@ export type AuthUser = {
 };
 
 export async function sendOtp(identifier: string, purpose: string = "login") {
-  const response = await fetch(`${API_BASE_URL}/auth/send-otp`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/send-otp`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, purpose })
@@ -32,7 +32,7 @@ export async function sendOtp(identifier: string, purpose: string = "login") {
 }
 
 export async function verifyOtp(identifier: string, otp: string, purpose: string = "login") {
-  const response = await fetch(`${API_BASE_URL}/auth/verify-otp`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/verify-otp`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, otp, purpose })
@@ -43,7 +43,7 @@ export async function verifyOtp(identifier: string, otp: string, purpose: string
 }
 
 export async function signup(name: string, email: string, phone_number: string | undefined, otp: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/signup`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, phone_number, otp })
@@ -54,7 +54,7 @@ export async function signup(name: string, email: string, phone_number: string |
 }
 
 export async function loginOtp(identifier: string, otp: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/login-otp`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/login-otp`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ identifier, otp })
@@ -65,7 +65,7 @@ export async function loginOtp(identifier: string, otp: string) {
 }
 
 export async function firebaseLogin(id_token: string, name?: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/firebase-login`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/firebase-login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ id_token, name })
@@ -76,7 +76,7 @@ export async function firebaseLogin(id_token: string, name?: string) {
 }
 
 export async function refreshAccessToken(refresh_token: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ refresh_token })
@@ -88,7 +88,7 @@ export async function refreshAccessToken(refresh_token: string) {
 
 export async function logoutServer(refresh_token: string) {
   try {
-    await fetch(`${API_BASE_URL}/auth/logout`, {
+    await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token })
@@ -97,7 +97,7 @@ export async function logoutServer(refresh_token: string) {
 }
 
 export async function getCurrentUser(token: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!response.ok) throw new Error(await parseError(response, "Session expired"));
@@ -290,14 +290,14 @@ export async function fetchDocFromGov(token: string, docType: string, portalId: 
 export async function fetchAdminUsers(token: string, search: string = "") {
   const url = search
     ? `${API_BASE_URL}/auth/admin/users?search=${encodeURIComponent(search)}`
-    : `${API_BASE_URL}/auth/admin/users`;
+    : `${API_BASE_URL}/api/v1/auth/admin/users`;
   const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!response.ok) throw new Error(await parseError(response, "Failed to fetch users"));
   return response.json();
 }
 
 export async function promoteUser(token: string, email: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/admin/promote`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/admin/promote`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ email })
@@ -307,7 +307,7 @@ export async function promoteUser(token: string, email: string) {
 }
 
 export async function demoteUser(token: string, email: string) {
-  const response = await fetch(`${API_BASE_URL}/auth/admin/demote`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/admin/demote`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify({ email })
