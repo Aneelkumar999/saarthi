@@ -9,10 +9,10 @@ from email.mime.multipart import MIMEMultipart
 @dataclass
 class EmailConfig:
     smtp_host: str = "smtp.gmail.com"
-    smtp_port: int = 587
+    smtp_port: int = 465
     smtp_user: str = ""
     smtp_password: str = ""
-    from_email: str = "Saarthi AI <noreply@saarthi.ai>"
+    from_email: str = "Saarthi AI <anilkumarvalaboju@gmail.com>"
     enabled: bool = False
 
 
@@ -46,12 +46,30 @@ def _send_via_smtp(to_email: str, subject: str, html_body: str, text_body: str) 
         msg.attach(MIMEText(text_body, "plain"))
         msg.attach(MIMEText(html_body, "html"))
 
-        with smtplib.SMTP(cfg.smtp_host, cfg.smtp_port, timeout=15) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(cfg.smtp_user, cfg.smtp_password)
-            server.sendmail(cfg.smtp_user, to_email, msg.as_string())
+       print(f"Connecting to {cfg.smtp_host}:{cfg.smtp_port}")
+
+with smtplib.SMTP(cfg.smtp_host, cfg.smtp_port, timeout=15) as server:
+    print("Connected")
+
+    server.ehlo()
+
+    print("Starting TLS")
+    with smtplib.SMTP_SSL(
+    cfg.smtp_host,
+    cfg.smtp_port,
+    timeout=15
+) as server:
+
+    print("TLS Started")
+    server.ehlo()
+
+    print("Logging in")
+    server.login(cfg.smtp_user, cfg.smtp_password)
+
+    print("Sending email")
+    server.sendmail(cfg.smtp_user, to_email, msg.as_string())
+
+    print("Email sent")
 
         print(f"[email_service] Email sent to {to_email}")
         return True
