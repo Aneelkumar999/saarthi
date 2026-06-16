@@ -4,7 +4,7 @@ import threading
 from dataclasses import dataclass
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from resend import Resend
+import resend
 
 @dataclass
 class EmailConfig:
@@ -35,24 +35,21 @@ def get_email_config() -> EmailConfig:
     return _email_config
 
 
-resend_client = Resend(api_key=os.getenv("RESEND_API_KEY"))
+resend.api_key = os.getenv("RESEND_API_KEY"))
 
 
 def send_otp_email(to_email: str, otp: str, purpose: str = "login") -> bool:
     try:
         purpose_label = "Sign in" if purpose == "login" else "Create your account"
 
-        resend_client.emails.send({
-            "from": "onboarding@resend.dev",
-            "to": [to_email],
-            "subject": f"Your Saarthi AI OTP: {otp}",
-            "html": f"""
-            <h2>Saarthi AI</h2>
-            <p>{purpose_label}</p>
-            <h1>{otp}</h1>
-            <p>Valid for 5 minutes</p>
-            """
-        })
+       params = {
+    "from": "onboarding@resend.dev",
+    "to": [to_email],
+    "subject": subject,
+    "html": html_body,
+}
+
+resend.Emails.send(params)
 
         print(f"[email_service] Email sent to {to_email}")
         return True
