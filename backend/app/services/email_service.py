@@ -4,7 +4,7 @@ import threading
 from dataclasses import dataclass
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
+from resend import Resend
 
 @dataclass
 class EmailConfig:
@@ -35,48 +35,31 @@ def get_email_config() -> EmailConfig:
     return _email_config
 
 
-def _send_via_smtp(to_email: str, subject: str, html_body: str, text_body: str) -> bool:
+resend_client = Resend(api_key=os.getenv("RESEND_API_KEY"))
+
+
+def send_otp_email(to_email: str, otp: str, purpose: str = "login") -> bool:
     try:
-        cfg = get_email_config()
+        purpose_label = "Sign in" if purpose == "login" else "Create your account"
 
-        msg = MIMEMultipart("alternative")
-        msg["From"] = cfg.from_email
-        msg["To"] = to_email
-        msg["Subject"] = subject
-        msg.attach(MIMEText(text_body, "plain"))
-        msg.attach(MIMEText(html_body, "html"))
-
-       print(f"Connecting to {cfg.smtp_host}:{cfg.smtp_port}")
-
-with smtplib.SMTP(cfg.smtp_host, cfg.smtp_port, timeout=15) as server:
-    print("Connected")
-
-    server.ehlo()
-
-    print("Starting TLS")
-    with smtplib.SMTP_SSL(
-    cfg.smtp_host,
-    cfg.smtp_port,
-    timeout=15
-) as server:
-
-    print("TLS Started")
-    server.ehlo()
-
-    print("Logging in")
-    server.login(cfg.smtp_user, cfg.smtp_password)
-
-    print("Sending email")
-    server.sendmail(cfg.smtp_user, to_email, msg.as_string())
-
-    print("Email sent")
+        resend_client.emails.send({
+            "from": "onboarding@resend.dev",
+            "to": [to_email],
+            "subject": f"Your Saarthi AI OTP: {otp}",
+            "html": f"""
+            <h2>Saarthi AI</h2>
+            <p>{purpose_label}</p>
+            <h1>{otp}</h1>
+            <p>Valid for 5 minutes</p>
+            """
+        })
 
         print(f"[email_service] Email sent to {to_email}")
         return True
-    except Exception as exc:
-        print(f"[email_service] SMTP send failed: {exc}")
-        return False
 
+    except Exception as exc:
+        print(f"[email_service] Email send failed: {exc}")
+        return False
 
 def send_otp_email(to_email: str, otp: str, purpose: str = "login") -> bool:
     cfg = get_email_config()
