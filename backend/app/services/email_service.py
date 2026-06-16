@@ -35,7 +35,7 @@ def get_email_config() -> EmailConfig:
     return _email_config
 
 
-resend.api_key = os.getenv("RESEND_API_KEY"))
+resend.api_key = os.getenv("RESEND_API_KEY")
 
 
 def send_otp_email(to_email: str, otp: str, purpose: str = "login") -> bool:
