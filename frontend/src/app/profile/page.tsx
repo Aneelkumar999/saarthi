@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { getToken, isAuthenticated, logout } from "@/lib/auth";
 import { useIsClient } from "@/lib/use-is-client";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saarthi-54ed.onrender.com";
 
 type Profile = {
   full_name: string;
