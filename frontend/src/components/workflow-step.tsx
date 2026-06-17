@@ -117,7 +117,7 @@ export function WorkflowStep({ step, onUpload }: { step: WorkflowStepData; onUpl
   }
 
   return (
-    <Card className="relative overflow-hidden">
+    <Card className="relative overflow-visible">
       <div className="absolute left-0 top-0 h-full w-1.5 bg-saffron" />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex-1">
