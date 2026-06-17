@@ -159,7 +159,7 @@ export async function fetchDepartments() {
 }
 
 export async function fetchProfile(token: string) {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/profile`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   if (!response.ok) throw new Error("Failed to fetch profile");
