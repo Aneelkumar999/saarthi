@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { getToken, isAuthenticated, logout } from "@/lib/auth";
 import { useIsClient } from "@/lib/use-is-client";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saarthi-54ed.onrender.com";
+import { fetchProfile, updateProfile } from "@/lib/api";
 
 type Profile = {
   full_name: string;
@@ -53,31 +52,27 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!authenticated) return;
 
-    async function fetchProfile() {
+    async function loadProfile() {
       const token = getToken();
       if (!token) { setLoading(false); return; }
 
       try {
-        const res = await fetch(`${API_BASE_URL}/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.status === 401) {
+        const data = await fetchProfile(token);
+        setProfile(data);
+        setForm(data);
+      } catch (error) {
+        if (error instanceof Error && error.message === "Session expired") {
           logout();
           router.push("/login");
           return;
         }
-        if (!res.ok) throw new Error("Failed to load profile");
-        const data: Profile = await res.json();
-        setProfile(data);
-        setForm(data);
-      } catch {
         setMessage({ type: "error", text: "Unable to load profile. Please try again." });
       } finally {
         setLoading(false);
       }
     }
 
-    fetchProfile();
+    loadProfile();
   }, [authenticated, router]);
 
   if (!authenticated) {
@@ -112,25 +107,16 @@ export default function ProfilePage() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/profile`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(form),
-      });
-      if (res.status === 401) {
+      const updated = await updateProfile(token, form);
+      setProfile(updated);
+      setForm(updated);
+      setMessage({ type: "success", text: "Profile saved successfully." });
+    } catch (error) {
+      if (error instanceof Error && error.message === "Session expired") {
         logout();
         router.push("/login");
         return;
       }
-      if (!res.ok) throw new Error("Failed to save profile");
-      const updated: Profile = await res.json();
-      setProfile(updated);
-      setForm(updated);
-      setMessage({ type: "success", text: "Profile saved successfully." });
-    } catch {
       setMessage({ type: "error", text: "Unable to save profile. Please try again." });
     } finally {
       setSaving(false);
