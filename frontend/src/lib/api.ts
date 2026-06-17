@@ -227,7 +227,7 @@ export type GovPortal = {
 };
 
 export async function fetchGovPortals() {
-  const response = await fetch(`${API_BASE_URL}/gov/portals`);
+  const response = await fetch(`${API_BASE_URL}/api/v1/gov/portals`);
   if (!response.ok) throw new Error("Failed to fetch government portals");
   return response.json() as Promise<GovPortal[]>;
 }
