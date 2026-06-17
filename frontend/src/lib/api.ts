@@ -167,7 +167,7 @@ export async function fetchProfile(token: string) {
 }
 
 export async function updateProfile(token: string, data: Record<string, unknown>) {
-  const response = await fetch(`${API_BASE_URL}/profile`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/profile`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
     body: JSON.stringify(data)
