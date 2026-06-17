@@ -124,8 +124,8 @@ export async function uploadDocument(file: File) {
 
 export async function fetchSchemes(category?: string) {
   const url = category && category !== "All"
-    ? `${API_BASE_URL}/schemes?category=${encodeURIComponent(category)}`
-    : `${API_BASE_URL}/schemes`;
+    ? `${API_BASE_URL}/api/v1/schemes?category=${encodeURIComponent(category)}`
+    : `${API_BASE_URL}/api/v1/schemes`;
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch schemes");
   return response.json();
