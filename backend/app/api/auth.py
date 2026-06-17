@@ -89,6 +89,13 @@ def _send_otp_logic(db: Session, identifier: str, purpose: str, ip_address: str,
     ))
     db.commit()
 
+    print("===================================")
+    print("IDENTIFIER:", identifier)
+    print("NORMALIZED:", normalized)
+    print("CHANNEL:", channel)
+    print("OTP:", otp)
+    print("===================================")
+
     if channel == "email":
         send_otp_email(normalized, otp, purpose)
     elif channel == "phone":
