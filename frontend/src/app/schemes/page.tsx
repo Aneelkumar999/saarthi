@@ -25,7 +25,7 @@ interface EligibilityCheck {
   detail: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api/v1";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://saarthi-54ed.onrender.com/api/v1";
 
 const categories = ["All", "Business", "Farmer", "Student", "BPL", "SC/ST", "General"] as const;
 
