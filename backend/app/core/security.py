@@ -53,9 +53,9 @@ def normalize_identifier(identifier: str) -> str:
 
 
 def generate_otp() -> str:
-    if os.getenv("AUTH_DEV_FIXED_OTP", "true").lower() == "true":
+    if os.getenv("AUTH_DEV_FIXED_OTP", "false").lower() == "true":
         return "123456"
-    return f"{random.randint(0, 999999):06d}"
+    return f"{random.randint(100000, 999999):06d}"
 
 
 def mask_destination(identifier: str, channel: str) -> str:
