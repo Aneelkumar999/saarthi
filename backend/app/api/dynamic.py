@@ -36,7 +36,7 @@ async def get_schemes(category: str = None, db: Session = Depends(get_db)):
     return result
 
 # GET /api/v1/dashboard/stats - Get dashboard statistics
-@router.get("/dashboard/stats")
+@router.get("/api/v1/dashboard/stats")
 async def get_dashboard_stats(db: Session = Depends(get_db)):
     total_journeys = db.query(models.UserJourney).count()
     active_journeys = db.query(models.UserJourney).filter(models.UserJourney.status == "active").count()
